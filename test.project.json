@@ -1,0 +1,12 @@
+{
+	"name": "astrotube",
+	"tree": {
+		"$className": "DataModel",
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+			"astrotube": {
+				"$path": "src"
+			}
+		}
+	}
+}
