@@ -1,7 +1,6 @@
 {
 	"name": "astrotube",
 	"tree": {
-			"$path": "src"
-		}
+		"$path": "src"
 	}
 }
