@@ -43,7 +43,11 @@ local function eject(rootPart, humanoid)
 	end))
 
 	local function touched(hit)
-		if not (hit:IsDescendantOf(AstroTubeContainer) or hit:IsDescendantOf(LocalPlayer.Character)) then
+		if not (
+			hit:IsDescendantOf(AstroTubeContainer)
+			or hit:IsDescendantOf(LocalPlayer.Character)
+			or not hit.CanCollide
+		) then
 			-- Touched something; cleanup
 			dtor:destroy()
 		end
