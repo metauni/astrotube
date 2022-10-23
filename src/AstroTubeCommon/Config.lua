@@ -8,6 +8,8 @@ local AstroTubeConstants = {
 	MaxFlingTime = 5;
 	ExtraSlideDist = 10;
 	EntranceHeight = 10;
+	SegmentsPerTube = 4;
+	TouchPartSize = Vector3.new(3, 4, 3);
 
 	TubeAttributes = { -- [Name]: Default
 		EjectSpeed = 0;

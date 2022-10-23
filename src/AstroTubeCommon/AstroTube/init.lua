@@ -7,9 +7,6 @@ local Ring = script.Ring
 local Tube = script.Tube
 local Entrance = script.Entrance
 
-local SEGMENTS_PER_TUBE = 4
-local ENTRANCE_SIZE = Vector3.new(3, 4, 3)
-
 local TUBE_BONE_ROT = CFrame.Angles(-math.pi/2, 0, 0)
 
 local AstroTube = {}
@@ -51,7 +48,7 @@ local function createRing(cf, radius)
 	return ring
 end
 
-function AstroTube.CreateTube(points, entranceCF, attributes, parent)
+function AstroTube.CreateTube(points, attributes, parent)
 	local props = {}
 	for name, default in pairs(Config.TubeAttributes) do
 		props[name] = attributes[name] or default
@@ -69,26 +66,28 @@ function AstroTube.CreateTube(points, entranceCF, attributes, parent)
 	end
 	
 	local spline = CatRom.new(points)
-	local numTubes = math.ceil(spline.length / props.TubeLength) * SEGMENTS_PER_TUBE
+	local numTubes = math.ceil(spline.length / props.TubeLength) * Config.SegmentsPerTube
 
 	local prevCF = spline:SolveUniformCFrame(0)
 	-- Align prevCF to top of entrance
-	prevCF = CFrame.lookAt(prevCF.Position, prevCF.Position + entranceCF.UpVector, prevCF.UpVector)
+	prevCF = CFrame.lookAt(prevCF.Position, prevCF.Position + points[1].UpVector, prevCF.UpVector)
+	styleRing(createRing(prevCF, props.TubeRadius))
+
 	for i = 1, numTubes do
 		local cf = spline:SolveUniformCFrame(i / numTubes)
 		-- Low-budget rotation-minimizing frame
 		cf = CFrame.lookAt(cf.Position, cf.Position + cf.LookVector, prevCF.UpVector)
 		styleTube(createTube(prevCF, cf, props.TubeRadius))
-		if i%SEGMENTS_PER_TUBE == 0 then
+		if i%Config.SegmentsPerTube == 0 then
 			styleRing(createRing(cf, props.TubeRadius))
 		end
 		prevCF = cf
 	end
 	
+	local entranceCF = points[1] * CFrame.new(0, -Config.EntranceHeight, 0)
 	local entrance = Entrance:Clone()
 	entrance:PivotTo(entranceCF)
-	styleRing(entrance.Ring1)
-	styleRing(entrance.Ring2)
+	styleRing(entrance.Ring)
 	styleRing(entrance.DoorFrame)
 	styleTube(entrance.Tube)
 	entrance.Parent = parent
@@ -97,8 +96,8 @@ function AstroTube.CreateTube(points, entranceCF, attributes, parent)
 	touchPart.Anchored = true
 	touchPart.CanCollide = false
 	touchPart.CanQuery = false
-	touchPart.CFrame = entranceCF * CFrame.new(0, ENTRANCE_SIZE.Y/2, 0)
-	touchPart.Size = ENTRANCE_SIZE
+	touchPart.CFrame = entranceCF * CFrame.new(0, Config.TouchPartSize.Y/2, 0)
+	touchPart.Size = Config.TouchPartSize
 	touchPart.Transparency = 1
 	touchPart.Parent = parent
 	
