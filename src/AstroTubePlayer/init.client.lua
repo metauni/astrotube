@@ -114,7 +114,7 @@ end
 local function touchPartRemoved(touchPart)
 	local conn = TouchPartConnections[touchPart]
 	if conn then
-		conn:Destroy()
+		conn:Disconnect()
 		TouchPartConnections[touchPart] = nil
 	end
 end
