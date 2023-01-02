@@ -1,8 +1,4 @@
 local AstroTubeConstants = {
-	TubeTag = "astrotube";
-	TubeContainerTag = "astrotube_container";
-	TouchPartTag = "astrotube_touch_part";
-	TouchPartPointsAttribute = "astrotube_points";
 
 	SlideCooldown = 5;
 	MaxFlingTime = 5;

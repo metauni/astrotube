@@ -1,21 +1,23 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-local Config = require(script.Parent.Config)
-local CatRom = require(script.CatRom)
+local DefaultConstants = require(script.DefaultConstants)
+local CatRom = require(script.Parent.CatRom)
 local Ring = script.Ring
 local Tube = script.Tube
 local Entrance = script.Entrance
 
 local TUBE_BONE_ROT = CFrame.Angles(-math.pi/2, 0, 0)
 
-local AstroTube = {}
+local AstroTube = {
+
+	Constants = DefaultConstants
+}
 
 function AstroTube.Slide(spline, speed, callback)
-	speed = speed or Config.TubeAttributes.SlideSpeed
+	speed = speed or AstroTube.Constants.TubeAttributes.SlideSpeed
 
 	local slideTime = spline.length / speed
-	local extraTime = Config.ExtraSlideDist / speed
+	local extraTime = AstroTube.Constants.ExtraSlideDist / speed
 	local finished = false
 	local t = os.clock()
 
@@ -50,7 +52,7 @@ end
 
 function AstroTube.CreateTube(points, attributes, parent)
 	local props = {}
-	for name, default in pairs(Config.TubeAttributes) do
+	for name, default in pairs(AstroTube.Constants.TubeAttributes) do
 		props[name] = attributes[name] or default
 	end
 	
@@ -66,7 +68,7 @@ function AstroTube.CreateTube(points, attributes, parent)
 	end
 	
 	local spline = CatRom.new(points)
-	local numTubes = math.ceil(spline.length / props.TubeLength) * Config.SegmentsPerTube
+	local numTubes = math.ceil(spline.length / props.TubeLength) * AstroTube.Constants.SegmentsPerTube
 
 	local prevCF = spline:SolveUniformCFrame(0)
 	-- Align prevCF to top of entrance
@@ -78,13 +80,13 @@ function AstroTube.CreateTube(points, attributes, parent)
 		-- Low-budget rotation-minimizing frame
 		cf = CFrame.lookAt(cf.Position, cf.Position + cf.LookVector, prevCF.UpVector)
 		styleTube(createTube(prevCF, cf, props.TubeRadius))
-		if i%Config.SegmentsPerTube == 0 then
+		if i%AstroTube.Constants.SegmentsPerTube == 0 then
 			styleRing(createRing(cf, props.TubeRadius))
 		end
 		prevCF = cf
 	end
 	
-	local entranceCF = points[1] * CFrame.new(0, -Config.EntranceHeight, 0)
+	local entranceCF = points[1] * CFrame.new(0, -AstroTube.Constants.EntranceHeight, 0)
 	local entrance = Entrance:Clone()
 	entrance:PivotTo(entranceCF)
 	styleRing(entrance.Ring)
@@ -96,8 +98,8 @@ function AstroTube.CreateTube(points, attributes, parent)
 	touchPart.Anchored = true
 	touchPart.CanCollide = false
 	touchPart.CanQuery = false
-	touchPart.CFrame = entranceCF * CFrame.new(0, Config.TouchPartSize.Y/2, 0)
-	touchPart.Size = Config.TouchPartSize
+	touchPart.CFrame = entranceCF * CFrame.new(0, AstroTube.Constants.TouchPartSize.Y/2, 0)
+	touchPart.Size = AstroTube.Constants.TouchPartSize
 	touchPart.Transparency = 1
 	touchPart.Parent = parent
 	

@@ -1,6 +1,6 @@
 {
-	"name": "astrotube",
+	"name": "AstroTube",
 	"tree": {
-		"$path": "src"
+		"$path": "lib"
 	}
 }
